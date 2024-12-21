@@ -21,6 +21,6 @@ async function connectToDatabase() {
     }
 
 
+    let db = await connectToDatabase()
 
-
-    export { connectToDatabase };
+    export { db };

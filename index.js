@@ -1,20 +1,16 @@
 import express from "express"
-import { connectToDatabase } from "./server.js"
 import cors from "cors"
-import bodyParser from "body-parser"
 import korisnici from "./routes/Korisnici.js"
 
-const db = await connectToDatabase()
 
-const PORT = process.env.VUE_BACKEND_URL
+const PORT = 3000
 
 const app = express()
 
 app.use(cors())
-app.use(bodyParser.json())
 app.use(express.json())
 
-app.use('/', korisnici)
+app.use('/korisnici', korisnici)
 
 
 
