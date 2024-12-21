@@ -4,7 +4,7 @@ import { config } from "dotenv"
 config()
 
 const mongoURI = process.env.MONGO_URI
-const rezervacije = process.env.MONGO_DB_NAME
+const database = process.env.MONGO_DB_NAME
 
 
 async function connectToDatabase() {
@@ -12,7 +12,7 @@ async function connectToDatabase() {
     const client = new MongoClient(mongoURI); 
     await client.connect();
     console.log('Uspješno spajanje na bazu podataka');
-    let db = client.db(rezervacije); 
+    let db = client.db(database); 
     return db;
     } catch (error) {
     console.error('Greška prilikom spajanja na bazu podataka', error);
