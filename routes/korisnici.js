@@ -8,7 +8,7 @@ const korisnici = express.Router()
 
 
 
-korisnici.get('/', async (req, res) => {
+korisnici.get('/api/korisnici', async (req, res) => {
     
     let korisnci_collection = db.collection('Korisnici')
     let sviKorisnci = await korisnci_collection.find().toArray()
@@ -20,21 +20,28 @@ korisnici.get('/', async (req, res) => {
 })
 
 
-korisnici.post('/', async (req, res) => {
-    let noviKorisnik = req.body
-    let baza = db.collection('Korisnici')
-
-    let podaci = ["ime", "prezime", "email"]
+korisnici.post('/api/login', async (req, res) => {
+    const {email, password} = req.body
     
-    let provjera = podaci.every(p => noviKorisnik.hasOwnProperty(p))
-
-    if(!provjera) {
-        return res.status(400).json("nedostaju podaci")
+    if(!email || !password) {
+        return res.status(400).json("email i lozinka su obavezni!")
     }
 
     try {
-        let dodaj = await baza.insertOne(noviKorisnik)
-        res.status(200).json(dodaj)
+        let baza = db.collection('Korisnici')
+
+        const korisnik = await baza.findOne({email})
+
+        if(!korisnik) {
+            return res.status(400).json("korisnik ne postoji!")
+        }
+
+        if(korisnik.password !== password) {
+            return res.status(401).json("kriva lozinka!")
+        }
+
+        res.status(200).json(email)
+        
     } catch (error) {
         res.status(400).json("Desila se greska prilikom unosa korisnika!")
     }
