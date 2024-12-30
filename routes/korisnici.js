@@ -1,12 +1,8 @@
 import express from 'express'
 import { db } from '../server.js'
-import { ObjectId } from 'mongodb'
-
 
 
 const korisnici = express.Router()
-
-
 
 
 korisnici.get('/api/korisnici', async (req, res) => {
@@ -55,7 +51,7 @@ korisnici.post('/api/registration', async (req, res) => {
     const {username, email, password, repeat_password} = req.body
 
     if(password !== repeat_password){
-        return res.status(400).json("greska u prijavi, lozinka nije ista!") && alert("krivo ste unijeli lozinku!")
+        return res.status(400).json("Greska u prijavi, lozinka nije ista!") 
     }
 
     let baza = db.collection('Korisnici')
@@ -69,8 +65,14 @@ korisnici.post('/api/registration', async (req, res) => {
             repeat_password
         }
 
+
+        const postojiKorisnik = await baza.findOne({email});
+        if (postojiKorisnik) {
+          return res.status(400).json({ message: "Email vec postoji" });
+        }
+
         const kreiran = await baza.insertOne(noviKorisnik)
-        res.status(201).json({message: `korisnik ${username} je kreiran`, id: kreiran.id})
+        res.status(201).json({message: `korisnik ${username} je kreiran`})
 
     } catch(error) {
         res.status(400).json("Desila se greska prilikom unosa");
