@@ -18,15 +18,15 @@ usluge.post ('/api/usluge', async (req, res) => {
     const {usluga, cijena, trajanje} = req.body
 
     if(!usluga) {
-        return res.status(400).json("Niste unijeli uslugu")
+        return res.status(404).json("Niste unijeli uslugu")
     }
 
     if(!cijena) {
-        return res.status(400).json("Niste unijeli cijenu")
+        return res.status(404).json("Niste unijeli cijenu")
     }
 
     if(!trajanje) {
-        return res.status(400).json("Niste unijeli trajanje")
+        return res.status(404).json("Niste unijeli trajanje")
     }
 
     let baza = db.collection('Usluge')
