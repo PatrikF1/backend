@@ -17,27 +17,24 @@ try {
 
 
 termini.post('/api/termini', async (req, res) => {
-    const { email } = req.body; 
-    if (!email) {
-      return res.status(400).json({ message: "Email je obavezan" }); 
-    }
-  
-    const baza = db.collection('Termini');
-  
-    try {
-      const noviTermin = {
-        email,
-        
-      };
-  
-      const rezultat = await baza.insertOne(noviTermin);
-  
-      res.status(201).json({ message: "Termin uspesno kreiran" });
-    } catch (error) {
-      res.status(500).json({ message: "Doslo je do greske", error: error.message });
-    }
-  });
-  
+  const { korisnik, frizer, usluga, datum } = req.body;
+
+  const baza = db.collection('Termini')
+
+  try {
+    const novaRezervacija = {
+      korisnik,
+      frizer,
+      usluga,
+      datum,
+    };
+
+    const rezultat = baza.insertOne(novaRezervacija);
+    res.status(201).json({ message: "Termin uspjesno spremljen", rezultat });
+  } catch (error) {
+    res.status(500).json({ message: "Greska prilikom spremanja termina", error: error.message });
+  }
+});
 
 
 
