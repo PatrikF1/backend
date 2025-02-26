@@ -1,6 +1,6 @@
 import express from 'express'
 import { db } from '../server.js'
-
+import { comparePassword, hashPassword } from '../hashiranje.js'
 
 const korisnici = express.Router()
 
@@ -34,8 +34,10 @@ korisnici.post('/api/login', async (req, res) => {
             return res.status(400).json("korisnik ne postoji!")
         }
 
-        if(korisnik.password !== password) {
-            return res.status(401).json("kriva lozinka!")
+        const lozinkaIspravna = await comparePassword(password, korisnik.password)
+
+        if(!lozinkaIspravna) {
+            return res.status(500).json("kriva lozinka!")
         }
 
         res.status(200).json(email)
@@ -56,22 +58,29 @@ korisnici.post('/api/registration', async (req, res) => {
 
     let baza = db.collection('Korisnici')
 
+
     try {
         
-        const noviKorisnik = {
-            username, 
-            email, 
-            password, 
-            repeat_password
-        }
-
-
         const postojiKorisnik = await baza.findOne({email});
         if (postojiKorisnik) {
           return res.status(400).json({ message: "Email vec postoji" });
         }
 
-        const kreiran = await baza.insertOne(noviKorisnik)
+        const hashed_password = await hashPassword(password, 10)
+
+        if(!hashed_password){
+        res.status(500).json("Doslo je do greske prilikom hashiranja lozinke")
+        return
+        }
+
+        const noviKorisnik = {
+            username, 
+            email, 
+            password: hashed_password, 
+        }
+
+
+        await baza.insertOne(noviKorisnik)
         res.status(201).json({message: `korisnik ${username} je kreiran`})
 
     } catch(error) {
