@@ -1,9 +1,11 @@
 import express from "express"
 import cors from "cors"
-import korisnici from "./routes/Korisnici.js"
+import korisnici from "./routes/korisnici.js"
 import usluge from "./routes/usluge.js"
 import frizeri from "./routes/frizeri.js"
 import termini from "./routes/termini.js"
+import router from "./uploadImage.js"
+
 
 
 const PORT = 3000
@@ -17,6 +19,7 @@ app.use('/', korisnici)
 app.use('/', usluge)
 app.use('/', frizeri)
 app.use('/', termini)
+app.use('/', router)
 
 
 

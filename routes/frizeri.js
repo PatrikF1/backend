@@ -1,7 +1,6 @@
 import express from 'express'
 import { db } from '../server.js'
-import { storage } from '../slike.js'
-import { upload } from '../slike.js'
+
 
 const frizeri = express.Router()
 
@@ -18,7 +17,7 @@ frizeri.get('/api/frizeri', async (req, res) => {
 
 
 frizeri.post('/api/frizeri', async (req, res) => {
-  const { ime, prezime, iskustvo, slika } = req.body
+  const { ime, prezime, iskustvo } = req.body
 
  
 
@@ -41,7 +40,6 @@ frizeri.post('/api/frizeri', async (req, res) => {
       ime,
       prezime,
       iskustvo, 
-      slika
     }
 
     const postojiFrizer = await baza.findOne({ ime })
