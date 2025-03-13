@@ -13,7 +13,8 @@ const storage = new GridFsStorage({
     file: (req, file) => {
       if (file.mimetype === 'image/jpeg') {
         return {
-          filename: file.originalname,
+          filename: 'file_' + Date.now(),
+          metadata: { fieldName: file.fieldname },
           bucketName: 'uploads',
           
         };
@@ -34,7 +35,26 @@ router.post('/api/upload',upload.single('file'), async (req, res) => {
         return res.status(400).json({message: "Nema dodane slike"})
     }
 
-    res.status(200).json({message: "Slika je uspijesno dodana!"})
+    const {ime, prezime, iskustvo} = req.body
+    let baza = db.collection('Frizeri')
+
+    try {
+
+      const noviDodanFrizer = {
+        ime,
+        prezime,
+        iskustvo,
+        slikaId: req.file.id
+      }
+
+      await baza.insertOne(noviDodanFrizer)
+      res.status(200).json({message: "Slika je uspijesno dodana!"})
+
+    } catch (error) {
+      res.status(400).json({message: "Greska pri dodavanju frizera"})
+    }
+
+    
   })
 
 
