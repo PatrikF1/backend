@@ -61,9 +61,21 @@ frizeri.delete('/api/frizeri/:id', async (req, res) => {
   try {
     let baza = db.collection('Frizeri')
 
-    const result = await baza.findOne({_id: id})
-     await baza.deleteOne(result)
+     await baza.deleteOne({_id: id})
     res.status(200).json({message: "Korisnik je izbrisan!"})
+  } catch (error) {
+    res.status(400).json("Doslo je do greske", error.message)
+  }
+})
+
+frizeri.patch('/api/frizeri/:id', async (req, res) => {
+  const id = new ObjectId(req.params.id)
+  const { iskustvo } = req.body
+  try {
+    let baza = db.collection('Frizeri')
+    
+     await baza.updateOne({_id: id}, {$set: {iskustvo: iskustvo}})
+    res.status(200).json("Iskustvo je promijenjeno")
   } catch (error) {
     res.status(400).json("Doslo je do greske", error.message)
   }
