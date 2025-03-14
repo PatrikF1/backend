@@ -15,7 +15,7 @@ const storage = new GridFsStorage({
         return {
           filename: 'file_' + Date.now(),
           metadata: { fieldName: file.fieldname },
-          bucketName: 'uploads',
+          bucketName: 'fs',
           
         };
       } else {
@@ -46,28 +46,42 @@ router.post('/api/upload',upload.single('file'), async (req, res) => {
       }
 
       await baza.insertOne(noviDodanFrizer)
-      res.status(200).json({message: "Slika je uspijesno dodana!"})
+      res.status(200).json({message: "Slika je uspijesno dodana!", noviDodanFrizer})
+      
 
     } catch (error) {
       res.status(400).json({message: "Greska pri dodavanju frizera"})
     }
   })
 
-  router.get('/api/upload/:id', async (req, res) => {
+  router.get("/api/upload/:id", async (req, res) => {
     try {
-      const fileId = new ObjectId(req.params.id)
-      const bucket = new GridFSBucket(db, {bucketName: 'uploads'})
-      
-      const preuzimanje = bucket.openDownloadStream(fileId)
-      preuzimanje.on('error', () => {
-        res.status(404).json({message: "Slika nije pronadena"})
-      })
+        const fileId = new ObjectId(req.params.id);  
+        const bucket = new GridFSBucket(db, { bucketName: "fs" }); 
 
-      res.set('Content-type', 'image/jpeg')
-      preuzimanje.pipe(res)
+        
+        const file = await db.collection("fs.files").findOne({ _id: fileId });
+        if (!file) {
+            return res.status(404).json({ message: "Slika ne postoji" });
+        }
+
+        res.set("Content-Type", file.contentType);
+
+        
+        const downloadStream = bucket.openDownloadStream(fileId);
+        downloadStream.pipe(res);
+
+        
+        downloadStream.on("error", (error) => {
+            console.error("Greška pri streamanju slike:", error);
+            res.status(500).json({ message: "Greska pri dohvacanju slike" });
+        });
+
     } catch (error) {
-      res.status(400).json({message: "Greska pri dohvacanju slike"})
+        console.error("Greška:", error);
+        res.status(400).json({ message: "Neispravan ID slike" });
     }
-  })
+});
+
 
 export default router
