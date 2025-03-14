@@ -1,5 +1,6 @@
 import express from 'express'
 import { db } from '../server.js'
+import { ObjectId } from 'mongodb'
 
 
 const frizeri = express.Router()
@@ -54,31 +55,17 @@ frizeri.post('/api/frizeri', async (req, res) => {
   }
 })
 
-frizeri.patch('/api/frizeri/:ime/:prezime', async (req, res) => {
-  let baza = db.collection('Frizeri')
-  let ime_param = req.params.ime
-  let prezime_param = req.params.prezime
-  let iskustvo_param = req.body.iskustvo
 
-  if (!ime_param || !prezime_param || !iskustvo_param) {
-    return res.status(400).json({ message: 'Svi podaci su obavezni!' })
-  }
-
+frizeri.delete('/api/frizeri/:id', async (req, res) => {
+  const id = new ObjectId(req.params.id) 
   try {
-    let nadogradi = await baza.updateOne(
-      { ime: ime_param, prezime: prezime_param },
-      { $set: { iskustvo: iskustvo_param } }
-    )
+    let baza = db.collection('Frizeri')
 
-    if (nadogradi.modifiedCount === 0) {
-      return res.status(404).json('Nije dohvaceno iskustvo')
-    }
-
-    res.status(200).json({ modifiedCount: nadogradi.modifiedCount })
+    const result = await baza.findOne({_id: id})
+     await baza.deleteOne(result)
+    res.status(200).json({message: "Korisnik je izbrisan!"})
   } catch (error) {
-    res
-      .status(400)
-      .json({ message: 'Doslo je do greske', error: error.message })
+    res.status(400).json("Doslo je do greske", error.message)
   }
 })
 
