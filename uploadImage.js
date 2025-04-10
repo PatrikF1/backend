@@ -56,11 +56,10 @@ router.post('/api/upload',upload.single('file'), async (req, res) => {
 
   router.get("/api/upload/:id", async (req, res) => {
     try {
-
         let baza = db.collection('fs.files')
 
         const fileId = new ObjectId(req.params.id);  
-        const bucket = new GridFSBucket(baza, { bucketName: "fs" }); 
+        const bucket = new GridFSBucket(db, { bucketName: "fs" }); 
 
         
         const file = await baza.findOne({ _id: fileId });

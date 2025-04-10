@@ -53,4 +53,32 @@ usluge.post ('/api/usluge', async (req, res) => {
     }
 })
 
+usluge.delete('/api/usluge/:id', async (req, res) => {
+  const id = new ObjectId(req.params.id) 
+  try {
+    let baza = db.collection('Usluge')
+
+     await baza.deleteOne({_id: id})
+    res.status(200).json({message: "Usluga je izbrisana!"})
+  } catch (error) {
+    res.status(400).json("Doslo je do greske", error.message)
+  }
+})
+
+usluge.patch('/api/usluge/:id', async (req, res) => {
+  const id = new ObjectId(req.params.id)
+  const { cijena, trajanje } = req.body
+  try {
+    let baza = db.collection('Usluge')
+    
+     await baza.updateOne({_id: id}, {$set: {
+        cijena: cijena, 
+        trajanje: trajanje
+    }})
+    res.status(200).json("cijena i trajanje su promijenjeni")
+  } catch (error) {
+    res.status(400).json("Doslo je do greske", error.message)
+  }
+})
+
 export default usluge

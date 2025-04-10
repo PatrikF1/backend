@@ -17,45 +17,6 @@ frizeri.get('/api/frizeri', async (req, res) => {
 
 
 
-frizeri.post('/api/frizeri', async (req, res) => {
-  const { ime, prezime, iskustvo } = req.body
-
- 
-
-  if (!ime) {
-    return res.status(404).json('Niste unijeli ime')
-  }
-
-  if (!prezime) {
-    return res.status(404).json('Niste unijeli prezime')
-  }
-
-  if (!iskustvo) {
-    return res.status(404).json('Niste unijeli iskustvo')
-  }
-
-  let baza = db.collection('Frizeri')
-
-  try {
-    const noviFrizer = {
-      ime,
-      prezime,
-      iskustvo, 
-    }
-
-    const postojiFrizer = await baza.findOne({ ime })
-    if (postojiFrizer) {
-      return res.status(404).json({ message: 'Frizer vec postoji' })
-    }
-
-    await baza.insertOne(noviFrizer)
-    res.status(201).json({ message: `Frizer ${ime} ${prezime} je kreiran` })
-  } catch (error) {
-    res.status(400).json('Doslo je do greske', error.message)
-  }
-})
-
-
 frizeri.delete('/api/frizeri/:id', async (req, res) => {
   const id = new ObjectId(req.params.id) 
   try {
@@ -67,6 +28,8 @@ frizeri.delete('/api/frizeri/:id', async (req, res) => {
     res.status(400).json("Doslo je do greske", error.message)
   }
 })
+
+
 
 frizeri.patch('/api/frizeri/:id', async (req, res) => {
   const id = new ObjectId(req.params.id)
