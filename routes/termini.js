@@ -22,6 +22,16 @@ termini.post('/api/termini', async (req, res) => {
   const baza = db.collection('Termini')
 
   try {
+
+    const postoji = await baza.findOne({
+      frizer: frizer,
+      datum: datum
+    })
+
+    if(postoji) {
+      return res.status(409).json({message: "Taj termin je vec zauzet"})
+    }
+
     const novaRezervacija = {
       korisnik,
       frizer,
