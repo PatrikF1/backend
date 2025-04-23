@@ -30,7 +30,7 @@ const storage = new GridFsStorage({
 
 router.post('/api/upload',upload.single('file'), async (req, res) => {
     if(!req.file) {
-        return res.status(400).json({message: "Nema dodane slike"})
+        return res.status(404).json({message: "Nema dodane slike"})
     }
 
     const {ime, prezime, iskustvo} = req.body

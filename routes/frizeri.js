@@ -11,7 +11,7 @@ frizeri.get('/api/frizeri', async (req, res) => {
   res.status(200).json(sviFrizeri)
 
   if (!sviFrizeri) {
-    res.status(400).json("Frizeri nisu dohvacene", error.message )
+    res.status(500).json("Frizeri nisu dohvacene", error.message )
   }
 })
 

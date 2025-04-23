@@ -50,7 +50,7 @@ usluge.post ('/api/usluge', async (req, res) => {
 
 
     } catch (error) {
-        res.status(400).json("Doslo je do greske", error)
+        res.status(500).json("Doslo je do greske na serveru", error)
     }
 })
 
@@ -62,7 +62,7 @@ usluge.delete('/api/usluge/:id', async (req, res) => {
      await baza.deleteOne({_id: id})
     res.status(200).json({message: "Usluga je izbrisana!"})
   } catch (error) {
-    res.status(400).json("Doslo je do greske", error.message)
+    res.status(500).json("Doslo je do greske na serveru", error.message)
   }
 })
 
@@ -78,7 +78,7 @@ usluge.patch('/api/usluge/:id', async (req, res) => {
     }})
     res.status(200).json("cijena i trajanje su promijenjeni")
   } catch (error) {
-    res.status(400).json("Doslo je do greske", error.message)
+    res.status(500).json("Doslo je do greske na serveru", error.message)
   }
 })
 

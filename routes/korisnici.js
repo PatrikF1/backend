@@ -31,19 +31,19 @@ korisnici.post('/api/login', async (req, res) => {
         const korisnik = await baza.findOne({email})
 
         if(!korisnik) {
-            return res.status(400).json("korisnik ne postoji!")
+            return res.status(404).json("korisnik ne postoji!")
         }
 
         const lozinkaIspravna = await comparePassword(password, korisnik.password)
 
         if(!lozinkaIspravna) {
-            return res.status(500).json("kriva lozinka!")
+            return res.status(401).json("kriva lozinka!")
         }
 
         res.status(200).json(email)
         
     } catch (error) {
-        res.status(400).json("Desila se greska prilikom unosa korisnika!")
+        res.status(500).json("Desila se greska na serveru!")
     }
     
 })

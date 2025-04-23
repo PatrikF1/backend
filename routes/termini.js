@@ -10,7 +10,7 @@ try {
     let termin = await baza.find().toArray()
     res.status(200).json(termin)
 } catch (error) {
-    res.status(400).json({message: "Doslo je do greske", error: error.message})
+    res.status(500).json({message: "Doslo je do greske na serveru", error: error.message})
 }
 
 })
@@ -31,6 +31,8 @@ termini.post('/api/termini', async (req, res) => {
     if(postoji) {
       return res.status(409).json({message: "Taj termin je vec zauzet"})
     }
+
+    console.log(postoji)
 
     const novaRezervacija = {
       korisnik,
